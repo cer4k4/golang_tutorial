@@ -28,10 +28,8 @@ type OrderRepository interface {
 	GetOrderItems(orderID uint) ([]*domain.OrderItem, error)
 }
 
-type CartRepository interface {
-	CreateCart(order *domain.CartOrder) error
-	GetByUserID(userID uint) (*domain.CartOrder, error)
-	Update(order *domain.CartOrder) error
+type CartItemsRepository interface {
+	GetByUserID(userID uint) (*[]domain.CartItems, error)
+	Update(cartitem *domain.CartItems) error
 	CreateCartItems(userid uint, item *domain.CartItems) error
-	GetCartItems(orderID uint) ([]*domain.CartOrder, error)
 }

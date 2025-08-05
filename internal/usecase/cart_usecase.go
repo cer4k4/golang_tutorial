@@ -8,7 +8,7 @@ import (
 )
 
 type CartUsecase struct {
-	cartRepo    repository.CartRepository
+	cartRepo    repository.CartItemsRepository
 	orderRepo   repository.OrderRepository
 	productRepo repository.ProductRepository
 }
@@ -97,6 +97,5 @@ func (u *CartUsecase) GetCart(userid uint) (*domain.CartOrder, error) {
 		cart.Items[i].ProductId = item.Items[0].ProductId
 	}
 	return cart, nil
-	//dfdsff
 
 }
