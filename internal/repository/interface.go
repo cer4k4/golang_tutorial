@@ -32,6 +32,6 @@ type CartRepository interface {
 	CreateCart(order *domain.CartOrder) error
 	GetByUserID(userID uint) (*domain.CartOrder, error)
 	Update(order *domain.CartOrder) error
-	CreateCartItems(user uint, item *domain.CartOrder) error
+	CreateCartItems(userid uint, item *domain.CartItems) error
 	GetCartItems(orderID uint) ([]*domain.CartOrder, error)
 }
