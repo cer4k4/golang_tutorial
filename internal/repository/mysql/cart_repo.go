@@ -3,6 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"shop/internal/domain"
+	"time"
 )
 
 type cartItemRepository struct {
@@ -25,9 +26,9 @@ func (r *cartItemRepository) GetByUserID(userID uint) ([]*domain.CartItems, erro
 	for rows.Next() {
 		item := &domain.CartItems{}
 		err := rows.Scan(
-			&item.UserId,
-			&item.Total,
-			&item.Status,
+			&item.ProductId,
+			&item.Fee,
+			&item.Quantity,
 			&item.CreatedAt,
 		)
 		if err != nil {
@@ -38,9 +39,10 @@ func (r *cartItemRepository) GetByUserID(userID uint) ([]*domain.CartItems, erro
 	return orders, nil
 }
 
-func (r *cartItemRepository) Update(order *domain.CartItems) error {
-	query := `UPDATE orders SET status = ?, total = ? WHERE id = ?`
-	_, err := r.db.Exec(query, order.Status, order.Total)
+func (r *cartItemRepository) Update(cart *domain.CartItems) error {
+	cart.UpdatedAt = time.Now()
+	query := `UPDATE orders SET quantity = ?, fee = ? WHERE product_id = ? AND user_id = ?`
+	_, err := r.db.Exec(query, cart.Quantity, cart.Fee, cart.ProductId, cart.UserId)
 	return err
 }
 

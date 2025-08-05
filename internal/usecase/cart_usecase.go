@@ -5,6 +5,7 @@ import (
 	"log"
 	"shop/internal/domain"
 	"shop/internal/repository"
+	"time"
 )
 
 type CartUsecase struct {
@@ -23,7 +24,6 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 	if oldCart.LockCart {
 		return errors.New("You have Cart in payment process")
 	}
-	var total float64
 	var cartItems []domain.CartItems
 	if err != nil {
 		log.Println(err)
@@ -40,30 +40,33 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 			return errors.New("insufficient stock")
 		}
 		cartItem := domain.CartItems{
+			UserId:    oldCart.ID,
 			ProductId: item.ProductId,
 			Quantity:  item.Quantity,
 			Fee:       product.Price,
+			CreatedAt: time.Now(),
 		}
 		// TODO: Add or Delete Old product
 
 		oldCart.TotalCart += product.Price * float64(item.Quantity)
-
-		total += product.Price * float64(item.Quantity)
 		cartItems = append(cartItems, cartItem)
 	}
 
 	// Create order items and update stock
 	for _, item := range cartItems {
-		if err := u.cartRepo.CreateCartItems(req.UserID, &item); err != nil {
+		if err = u.cartRepo.CreateCartItems(req.UserID, &item); err != nil {
 			return err
 		}
 
 		// Update product stock
-		product, _ := u.productRepo.GetByID(item.ProductId)
-		newStock := product.Stock - item.Quantity
-		if err := u.productRepo.UpdateStock(item.ProductId, newStock); err != nil {
-			return err
-		}
+		// product, _ := u.productRepo.GetByID(item.ProductId)
+		// newStock := product.Stock - item.Quantity
+		// if err := u.productRepo.UpdateStock(item.ProductId, newStock); err != nil {
+		// 	return err
+		// }
+	}
+	if err = u.userRepo.Update(oldCart); err != nil {
+		return err
 	}
 	return nil
 }
