@@ -21,13 +21,12 @@ func NewCartUseCase(cartRepo *repository.CartItemsRepository, orderRepo *reposit
 
 func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 	oldCart, err := u.userRepo.GetByID(req.UserID)
-	if oldCart.LockCart {
-		return errors.New("You have Cart in payment process")
-	}
-	var cartItems []domain.CartItems
 	if err != nil {
 		log.Println(err)
 		return err
+	}
+	if oldCart.LockCart {
+		return errors.New("You have Cart in payment processing")
 	}
 
 	// Validate products and calculate total
@@ -39,21 +38,15 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 		if product.Stock < item.Quantity {
 			return errors.New("insufficient stock")
 		}
-		cartItem := domain.CartItems{
-			UserId:    oldCart.ID,
-			ProductId: item.ProductId,
-			Quantity:  item.Quantity,
-			Fee:       product.Price,
-			CreatedAt: time.Now(),
-		}
 		// TODO: Add or Delete Old product
 
 		oldCart.TotalCart += product.Price * float64(item.Quantity)
-		cartItems = append(cartItems, cartItem)
 	}
 
 	// Create order items and update stock
-	for _, item := range cartItems {
+	for _, item := range req.Items {
+		item.CreatedAt = time.Now()
+		item.UserId = oldCart.ID
 		if err = u.cartRepo.CreateCartItems(req.UserID, &item); err != nil {
 			return err
 		}

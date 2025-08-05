@@ -12,6 +12,6 @@ type CartItems struct {
 }
 
 type RequestCart struct {
-	UserID uint        `json:"user_id" db:"user_id"`
+	UserID uint        `json:"user_id"`
 	Items  []CartItems `json:"items"`
 }
