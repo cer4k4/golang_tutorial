@@ -1,0 +1,53 @@
+name,description,price,stock,category
+iPhone 15 Pro,Latest iPhone with titanium design and A17 Pro chip,999.99,50,Electronics
+iPhone 15,Standard iPhone 15 with Dynamic Island,799.99,75,Electronics
+Samsung Galaxy S24,Flagship Android phone with AI features,899.99,40,Electronics
+Google Pixel 8,Pure Android experience with advanced camera,699.99,30,Electronics
+MacBook Pro 14,Professional laptop with M3 chip,1999.99,25,Computers
+MacBook Air 13,Lightweight laptop perfect for everyday use,1099.99,35,Computers
+Dell XPS 13,Premium Windows ultrabook,1299.99,20,Computers
+ThinkPad X1 Carbon,Business laptop with excellent keyboard,1599.99,15,Computers
+iPad Pro 12.9,Professional tablet with M2 chip,1099.99,40,Tablets
+iPad Air,Mid-range tablet with great performance,599.99,60,Tablets
+Samsung Galaxy Tab S9,Premium Android tablet,749.99,25,Tablets
+Microsoft Surface Pro 9,2-in-1 tablet and laptop,999.99,30,Tablets
+Sony WH-1000XM5,Premium noise-canceling headphones,399.99,80,Audio
+AirPods Pro 2,Apple wireless earbuds with ANC,249.99,100,Audio
+Bose QuietComfort,Comfortable noise-canceling headphones,329.99,45,Audio
+JBL Charge 5,Portable Bluetooth speaker,179.99,60,Audio
+Canon EOS R5,Professional mirrorless camera,3899.99,10,Photography
+Sony A7 IV,Full-frame mirrorless camera,2499.99,15,Photography
+Nikon D780,Professional DSLR camera,2299.99,12,Photography
+GoPro Hero 12,Action camera for adventure,399.99,35,Photography
+Nintendo Switch OLED,Gaming console with OLED screen,349.99,50,Gaming
+PlayStation 5,Sony's latest gaming console,499.99,20,Gaming
+Xbox Series X,Microsoft's flagship gaming console,499.99,25,Gaming
+Steam Deck,Portable PC gaming device,649.99,30,Gaming
+Apple Watch Series 9,Latest smartwatch from Apple,399.99,70,Wearables
+Samsung Galaxy Watch 6,Android smartwatch with health features,329.99,45,Wearables
+Fitbit Charge 5,Fitness tracker with GPS,149.99,90,Wearables
+Garmin Forerunner 955,GPS running watch for athletes,499.99,25,Wearables
+LG OLED55C3,55-inch OLED smart TV,1499.99,15,TV & Home
+Samsung QN85A,65-inch QLED smart TV,1799.99,12,TV & Home
+Sony X90K,55-inch LED smart TV,899.99,20,TV & Home
+TCL 6-Series,Budget-friendly 4K smart TV,599.99,30,TV & Home
+Dyson V15,Cordless vacuum cleaner,749.99,25,Home & Garden
+Roomba j7+,Robot vacuum with self-emptying,799.99,20,Home & Garden
+KitchenAid Stand Mixer,Professional stand mixer,379.99,35,Home & Garden
+Instant Pot Pro,Multi-cooker for quick meals,129.99,50,Home & Garden
+Nike Air Max 270,Comfortable running shoes,149.99,100,Fashion
+Adidas Ultraboost 22,Premium running sneakers,189.99,80,Fashion
+Levi's 501 Jeans,Classic straight-leg jeans,59.99,150,Fashion
+North Face Jacket,Weather-resistant outdoor jacket,199.99,60,Fashion
+Ray-Ban Aviator,Classic sunglasses,154.99,75,Fashion
+Oakley Holbrook,Sport sunglasses,138.99,50,Fashion
+Patagonia Backpack,Durable hiking backpack,89.99,40,Outdoor
+Coleman Tent,4-person camping tent,149.99,25,Outdoor
+Yeti Cooler,Premium insulated cooler,299.99,30,Outdoor
+REI Sleeping Bag,All-season sleeping bag,179.99,35,Outdoor
+Weber Grill,Gas barbecue grill,399.99,20,Outdoor
+Blackstone Griddle,Outdoor cooking griddle,249.99,15,Outdoor
+Vitamix Blender,High-performance blender,449.99,25,Kitchen
+Nespresso Machine,Pod coffee maker,199.99,40,Kitchen
+Le Creuset Dutch Oven,Enameled cast iron cookware,279.99,30,Kitchen
+All-Clad Cookware Set,Professional stainless steel set,499.99,20,Kitchen
