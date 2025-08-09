@@ -29,7 +29,15 @@ type OrderRepository interface {
 }
 
 type CartItemsRepository interface {
-	GetByUserID(userID uint) (*[]domain.CartItems, error)
+	GetByUserID(userID uint) ([]domain.CartItems, error)
 	Update(cartitem *domain.CartItems) error
-	CreateCartItems(userid uint, item *domain.CartItems) error
+	CreateCartItems(userid uint, item domain.CartItems) error
+	ClearCart(userID uint) error //
+}
+
+type PaymentRepository interface {
+	Create(payment *domain.Payment) error
+	GetByID(id uint) (*domain.Payment, error)
+	GetByUserID(userID uint, limit, offset int) ([]*domain.Payment, error)
+	Update(payment *domain.Payment) error
 }

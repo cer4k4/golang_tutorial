@@ -15,12 +15,12 @@ type CartUsecase struct {
 	productRepo repository.ProductRepository
 }
 
-func NewCartUseCase(cartRepo *repository.CartItemsRepository, orderRepo *repository.OrderRepository, productRepo *repository.ProductRepository, userRepo *repository.UserRepository) *CartUsecase {
-	return &CartUsecase{cartRepo: *cartRepo, orderRepo: *orderRepo, productRepo: *productRepo, userRepo: *userRepo}
+func NewCartUseCase(cartRepo repository.CartItemsRepository, orderRepo repository.OrderRepository, productRepo repository.ProductRepository, userRepo repository.UserRepository) *CartUsecase {
+	return &CartUsecase{cartRepo: cartRepo, orderRepo: orderRepo, productRepo: productRepo, userRepo: userRepo}
 }
 
-func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
-	oldCart, err := u.userRepo.GetByID(req.UserID)
+func (u *CartUsecase) CreateCart(userID uint, req domain.RequestCart) error {
+	oldCart, err := u.userRepo.GetByID(userID)
 	if err != nil {
 		log.Println(err)
 		return err
@@ -47,7 +47,7 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 	for _, item := range req.Items {
 		item.CreatedAt = time.Now()
 		item.UserId = oldCart.ID
-		if err = u.cartRepo.CreateCartItems(req.UserID, &item); err != nil {
+		if err = u.cartRepo.CreateCartItems(userID, item); err != nil {
 			return err
 		}
 
@@ -64,17 +64,16 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 	return nil
 }
 
-func (u *CartUsecase) GetCart(userid uint) (*domain.RequestCart, error) {
+func (u *CartUsecase) GetCart(userid uint) (domain.RequestCart, error) {
 	usercart, err := u.userRepo.GetByID(userid)
 	if err != nil {
-		return nil, err
+		return domain.RequestCart{}, err
 	}
 	items, err := u.cartRepo.GetByUserID(usercart.ID)
 	if err != nil {
-		return nil, err
+		return domain.RequestCart{}, err
 	}
 	var respon domain.RequestCart
-	respon.Items = *items
-	respon.UserID = userid
-	return &respon, nil
+	respon.Items = items
+	return respon, nil
 }
