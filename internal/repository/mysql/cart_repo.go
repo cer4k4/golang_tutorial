@@ -14,22 +14,22 @@ func NewCartRepository(db *sql.DB) *cartItemRepository {
 	return &cartItemRepository{db: db}
 }
 
-func (r *cartItemRepository) GetByUserID(userID uint) ([]*domain.CartItems, error) {
-	query := `SELECT user_id, total, status, created_at, updated_at FROM orders WHERE user_id = ?`
+func (r *cartItemRepository) GetByUserID(userID uint) ([]domain.CartItems, error) {
+	query := `SELECT user_id, quantity, product_id,fee FROM cart_items WHERE user_id = ?`
 	rows, err := r.db.Query(query, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var orders []*domain.CartItems
+	var orders []domain.CartItems
 	for rows.Next() {
-		item := &domain.CartItems{}
+		item := domain.CartItems{}
 		err := rows.Scan(
+			&item.UserId,
+			&item.Quantity,
 			&item.ProductId,
 			&item.Fee,
-			&item.Quantity,
-			&item.CreatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -41,8 +41,15 @@ func (r *cartItemRepository) GetByUserID(userID uint) ([]*domain.CartItems, erro
 
 func (r *cartItemRepository) Update(cart *domain.CartItems) error {
 	cart.UpdatedAt = time.Now()
-	query := `UPDATE orders SET quantity = ?, fee = ? WHERE product_id = ? AND user_id = ?`
+	query := `UPDATE cart_items SET quantity = ?, fee = ? WHERE product_id = ? AND user_id = ?`
 	_, err := r.db.Exec(query, cart.Quantity, cart.Fee, cart.ProductId, cart.UserId)
+	return err
+}
+
+func (r *cartItemRepository) Delete(cart *domain.CartItems) error {
+	cart.UpdatedAt = time.Now()
+	query := `DELETE FROM cart_items WHERE product_id = ? AND user_id = ?`
+	_, err := r.db.Exec(query, cart.ProductId, cart.UserId)
 	return err
 }
 

@@ -29,7 +29,8 @@ type OrderRepository interface {
 }
 
 type CartItemsRepository interface {
-	GetByUserID(userID uint) (*[]domain.CartItems, error)
+	GetByUserID(userID uint) ([]domain.CartItems, error)
 	Update(cartitem *domain.CartItems) error
+	Delete(cartitem *domain.CartItems) error
 	CreateCartItems(userid uint, item *domain.CartItems) error
 }
