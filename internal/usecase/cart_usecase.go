@@ -19,6 +19,7 @@ func NewCartUseCase(cartRepo repository.CartItemsRepository, userRepo repository
 	return &CartUsecase{cartRepo: cartRepo, userRepo: userRepo, orderRepo: orderRepo, productRepo: productRepo}
 }
 
+// TODO: add qauntiy from stock
 func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 	oldCart, err := u.userRepo.GetByID(userID)
 	if err != nil {
@@ -53,12 +54,10 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 			return errors.New("insufficient stock")
 		}
 		// TODO: Add or Delete Old product
-		
-
 		// if that item exist
 		if len(oldItems.Items) != 0 {
-			oldCart.TotalCart += product.Price * float64(item.Quantity)
 			if oldcart[item.ProductId].s.ProductId == item.ProductId {
+				oldCart.TotalCart += product.Price * float64(item.Quantity)
 				oldItems.Items[oldcart[item.ProductId].indexlist].Quantity += item.Quantity
 				if oldItems.Items[oldcart[item.ProductId].indexlist].Quantity < 0 {
 					u.cartRepo.Delete(&oldItems.Items[oldcart[item.ProductId].indexlist])
@@ -71,8 +70,12 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 				item.CreatedAt = time.Now()
 				item.UserId = userID
 				item.Fee = product.Price
-				if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
-					return err
+				if item.Quantity > 0 {
+					oldCart.TotalCart += product.Price * float64(item.Quantity)
+
+					if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
+						return err
+					}
 				}
 			}
 		} else {
