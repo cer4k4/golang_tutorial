@@ -28,7 +28,18 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 	if oldCart.LockCart {
 		return errors.New("You have Cart in payment processing")
 	}
+	type newModel struct {
+		indexlist int
+		s         domain.CartItems
+	}
+	var oldcart = make(map[uint]newModel)
 	oldItems, err := u.GetCart(userID)
+	for o := range oldItems.Items {
+		var m newModel
+		m.s = oldItems.Items[o]
+		m.indexlist = o
+		oldcart[oldItems.Items[o].ProductId] = m
+	}
 	if err != nil {
 		return err
 	}
@@ -42,35 +53,36 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 			return errors.New("insufficient stock")
 		}
 		// TODO: Add or Delete Old product
-		oldCart.TotalCart += product.Price * float64(item.Quantity)
+		
 
 		// if that item exist
 		if len(oldItems.Items) != 0 {
-			for o := range oldItems.Items {
-				if oldItems.Items[o].ProductId == item.ProductId {
-					oldItems.Items[o].Quantity += item.Quantity
-					if oldItems.Items[o].Quantity == 0 {
-						u.cartRepo.Delete(&oldItems.Items[o])
-					} else {
-						if err = u.cartRepo.Update(&oldItems.Items[o]); err != nil {
-							return err
-						}
-					}
+			oldCart.TotalCart += product.Price * float64(item.Quantity)
+			if oldcart[item.ProductId].s.ProductId == item.ProductId {
+				oldItems.Items[oldcart[item.ProductId].indexlist].Quantity += item.Quantity
+				if oldItems.Items[oldcart[item.ProductId].indexlist].Quantity < 0 {
+					u.cartRepo.Delete(&oldItems.Items[oldcart[item.ProductId].indexlist])
 				} else {
-					item.CreatedAt = time.Now()
-					item.UserId = userID
-					item.Fee = product.Price
-					if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
+					if err = u.cartRepo.Update(&oldItems.Items[oldcart[item.ProductId].indexlist]); err != nil {
 						return err
 					}
+				}
+			} else {
+				item.CreatedAt = time.Now()
+				item.UserId = userID
+				item.Fee = product.Price
+				if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
+					return err
 				}
 			}
 		} else {
 			item.CreatedAt = time.Now()
 			item.UserId = userID
 			item.Fee = product.Price
-			if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
-				return err
+			if item.Quantity > 0 {
+				if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
+					return err
+				}
 			}
 		}
 	}
