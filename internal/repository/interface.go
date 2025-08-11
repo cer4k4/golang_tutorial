@@ -41,3 +41,12 @@ type PaymentRepository interface {
 	GetByUserID(userID uint, limit, offset int) ([]*domain.Payment, error)
 	Update(payment *domain.Payment) error
 }
+
+type CategoryRepository interface {
+	Create(category *domain.Category) error
+	GetByID(id uint) (*domain.Category, error)
+	GetAll(limit, offset int) ([]*domain.Category, error)
+	Update(category *domain.Category) error
+	Delete(id uint) error
+	UpdateStock(id uint, stock int) error
+}

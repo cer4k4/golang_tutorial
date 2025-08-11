@@ -9,7 +9,7 @@ import (
 
 func NewMySQLConnection() (*sql.DB, error) {
 	// Configuration - in production, use environment variables
-	dsn := "admin:aka123456@tcp(localhost:3306)/shop_db?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:AkA12345678@tcp(localhost:3306)/shop_db?charset=utf8mb4&parseTime=True&loc=Local"
 
 	db, err := sql.Open("mysql", dsn)
 	if err != nil {
@@ -38,6 +38,7 @@ func createTables(db *sql.DB) error {
             role VARCHAR(50) DEFAULT 'user',
             total_cart DECIMAL(10,2) NOT NULL DEFAULT 0,
             lock_cart BOOLEAN DEFAULT 0,
+            total_discount DECIMAL(10,2),
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )`,
@@ -48,6 +49,7 @@ func createTables(db *sql.DB) error {
             price DECIMAL(10,2) NOT NULL,
             stock INT NOT NULL DEFAULT 0,
             category VARCHAR(100) NOT NULL,
+            discount INT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         )`,

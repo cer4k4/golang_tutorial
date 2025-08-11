@@ -57,7 +57,9 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 		// if that item exist
 		if len(oldItems.Items) != 0 {
 			if oldcart[item.ProductId].s.ProductId == item.ProductId {
-				oldCart.TotalCart += product.Price * float64(item.Quantity)
+				discountAmount := product.Price * (float64(product.Discount) / 100)
+				oldCart.TotalCart += (product.Price - discountAmount) * float64(item.Quantity)
+				oldCart.TotalDiscount += discountAmount
 				oldItems.Items[oldcart[item.ProductId].indexlist].Quantity += item.Quantity
 				if oldItems.Items[oldcart[item.ProductId].indexlist].Quantity < 0 {
 					u.cartRepo.Delete(&oldItems.Items[oldcart[item.ProductId].indexlist])
@@ -71,8 +73,10 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 				item.UserId = userID
 				item.Fee = product.Price
 				if item.Quantity > 0 {
-					oldCart.TotalCart += product.Price * float64(item.Quantity)
-
+					discountAmount := product.Price * (float64(product.Discount) / 100)
+					oldCart.TotalCart += (product.Price - discountAmount) * float64(item.Quantity)
+					oldCart.TotalDiscount += discountAmount
+					item.Discount = discountAmount
 					if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
 						return err
 					}
@@ -82,6 +86,10 @@ func (u *CartUsecase) CreateCart(userID uint, req *domain.RequestCart) error {
 			item.CreatedAt = time.Now()
 			item.UserId = userID
 			item.Fee = product.Price
+			discountAmount := product.Price * (float64(product.Discount) / 100)
+			oldCart.TotalCart += (product.Price - discountAmount) * float64(item.Quantity)
+			oldCart.TotalDiscount += discountAmount
+			item.Discount = discountAmount
 			if item.Quantity > 0 {
 				if err = u.cartRepo.CreateCartItems(userID, &item); err != nil {
 					return err

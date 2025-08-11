@@ -5,15 +5,16 @@ import (
 )
 
 type User struct {
-	ID        uint      `json:"id" db:"id"`
-	Username  string    `json:"username" db:"username"`
-	Email     string    `json:"email" db:"email"`
-	Password  string    `json:"-" db:"password"`
-	Role      string    `json:"role" db:"role"`
-	TotalCart float64   `json:"total_cart" db:"total_cart"`
-	LockCart  bool      `json:"lock_cart" db:"lock_cart"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	ID            uint      `json:"id" db:"id"`
+	Username      string    `json:"username" db:"username"`
+	Email         string    `json:"email" db:"email"`
+	Password      string    `json:"-" db:"password"`
+	Role          string    `json:"role" db:"role"`
+	TotalCart     float64   `json:"total_cart" db:"total_cart"`
+	TotalDiscount float64   `json:"total_discount" db:"total_discount"`
+	LockCart      bool      `json:"lock_cart" db:"lock_cart"`
+	CreatedAt     time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at" db:"updated_at"`
 }
 
 type UserRequest struct {
