@@ -77,6 +77,15 @@ func createTables(db *sql.DB) error {
             fee DECIMAL(10,2) NOT NULL,
             FOREIGN KEY (product_id) REFERENCES products(id)
         )`,
+		`CREATE TABLE IF NOT EXISTS payments (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            status VARCHAR(50),
+            order_id INT,
+            total DECIMAL(10,2) NOT NULL,
+            FOREIGN KEY (order_id) REFERENCES orders(id),
+            FOREIGN KEY (user_id) REFERENCES users(id)
+        )`,
 	}
 
 	for _, query := range queries {

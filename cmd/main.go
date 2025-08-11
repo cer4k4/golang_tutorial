@@ -29,7 +29,7 @@ func main() {
 	orderUsecase := usecase.NewOrderUsecase(orderRepo, productRepo)
 	cartUsecase := usecase.NewCartUseCase(cartRepo, userRepo, orderRepo, productRepo)
 	// TODO Add other usecase to payment for logic
-	paymentUsecase := usecase.NewPaymentUsecase(paymentRepo, orderRepo, productRepo)
+	paymentUsecase := usecase.NewPaymentUsecase(paymentRepo, orderRepo, productRepo, userRepo, cartRepo)
 	// Initialize HTTP handler
 	handler := http.NewHandler(userUsecase, productUsecase, orderUsecase, cartUsecase, paymentUsecase)
 

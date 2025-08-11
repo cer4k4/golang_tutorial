@@ -83,6 +83,7 @@ func (h *Handler) setupRoutes() {
 		cart.GET("", h.getCart)
 	}
 
+	// Payment
 	payment := api.Group("/payment")
 	payment.Use(middleware.AuthMiddleware())
 	{
@@ -325,14 +326,7 @@ func (h *Handler) getCart(c *gin.Context) {
 // Payment handlers
 func (h *Handler) createPayment(c *gin.Context) {
 	userID, _ := c.Get("user_id")
-
-	var req domain.Payment
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	order, err := h.paymentUsecase.CreatePayment(userID.(uint), &req)
+	order, err := h.paymentUsecase.CreatePayment(userID.(uint))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
