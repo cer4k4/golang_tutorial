@@ -16,15 +16,17 @@ type Handler struct {
 	productUsecase *usecase.ProductUsecase
 	orderUsecase   *usecase.OrderUsecase
 	cartUsecase    *usecase.CartUsecase
+	paymentUsecase *usecase.PaymentUsecase
 }
 
-func NewHandler(userUsecase *usecase.UserUsecase, productUsecase *usecase.ProductUsecase, orderUsecase *usecase.OrderUsecase, cartUsecase *usecase.CartUsecase) *Handler {
+func NewHandler(userUsecase *usecase.UserUsecase, productUsecase *usecase.ProductUsecase, orderUsecase *usecase.OrderUsecase, cartUsecase *usecase.CartUsecase, paymentUsecase *usecase.PaymentUsecase) *Handler {
 	handler := &Handler{
 		Router:         gin.Default(),
 		userUsecase:    userUsecase,
 		productUsecase: productUsecase,
 		orderUsecase:   orderUsecase,
 		cartUsecase:    cartUsecase,
+		paymentUsecase: paymentUsecase,
 	}
 
 	handler.setupRoutes()
@@ -81,6 +83,13 @@ func (h *Handler) setupRoutes() {
 		cart.GET("", h.getCart)
 	}
 
+	payment := api.Group("/payment")
+	payment.Use(middleware.AuthMiddleware())
+	{
+		payment.POST("", h.createPayment)
+		payment.GET("", h.getUserPayments)
+		payment.GET("/:id", h.getPayment)
+	}
 }
 
 func (h *Handler) register(c *gin.Context) {
@@ -311,4 +320,61 @@ func (h *Handler) getCart(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"cart": cart})
+}
+
+// Payment handlers
+func (h *Handler) createPayment(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+
+	var req domain.Payment
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	order, err := h.paymentUsecase.CreatePayment(userID.(uint), &req)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"order": order})
+}
+
+func (h *Handler) getPayment(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseUint(idStr, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid order ID"})
+		return
+	}
+
+	payment, err := h.paymentUsecase.GetPayment(uint(id))
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Order not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"payment": payment})
+}
+
+func (h *Handler) getUserPayments(c *gin.Context) {
+	userID, _ := c.Get("user_id")
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "10"))
+
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 || limit > 100 {
+		limit = 10
+	}
+
+	payments, err := h.paymentUsecase.GetUserPayments(userID.(uint), page, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"payment": payments})
 }

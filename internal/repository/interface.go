@@ -34,3 +34,10 @@ type CartItemsRepository interface {
 	Delete(cartitem *domain.CartItems) error
 	CreateCartItems(userid uint, item *domain.CartItems) error
 }
+
+type PaymentRepository interface {
+	Create(payment *domain.Payment) error
+	GetByID(id uint) (*domain.Payment, error)
+	GetByUserID(userID uint, limit, offset int) ([]*domain.Payment, error)
+	Update(payment *domain.Payment) error
+}
